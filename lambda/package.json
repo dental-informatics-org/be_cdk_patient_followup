@@ -1,15 +1,11 @@
 {
   "name": "be_cdk_patient_followup",
   "version": "0.1.0",
-  "bin": {
-    "be_cdk_patient_followup": "bin/be_cdk_patient_followup.js"
-  },
   "scripts": {
     "build": "tsc -b --clean",
     "watch": "tsc -w",
     "test": "jest",
-    "cdk": "cdk",
-    "deploy": "cd lambda && npm run build && cd .. && npm run build && cdk deploy"
+    "cdk": "cdk"
   },
   "devDependencies": {
     "@eslint/js": "^9.7.0",
