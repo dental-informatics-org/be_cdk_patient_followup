@@ -5,11 +5,12 @@
     "be_cdk_patient_followup": "bin/be_cdk_patient_followup.js"
   },
   "scripts": {
-    "build": "tsc -b --clean",
+    "build": "tsc",
+    "clean": "tsc -b -clean",
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "deploy": "cd lambda && npm run build && cd .. && npm run build && cdk deploy"
+    "deploy": "cd lambda && npm run build && cd .. && npm run build && npm run clean && cdk deploy"
   },
   "devDependencies": {
     "@eslint/js": "^9.7.0",

@@ -2,7 +2,7 @@
   "name": "be_cdk_patient_followup",
   "version": "0.1.0",
   "scripts": {
-    "build": "tsc -b --clean",
+    "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk"

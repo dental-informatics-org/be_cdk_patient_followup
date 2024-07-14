@@ -32,16 +32,20 @@ export class BeCdkPatientFollowupStack extends cdk.Stack {
 
     const lambdaWebhookMeta = new lambda.Function(this, 'webhookmeta', {
       runtime: lambda.Runtime.NODEJS_20_X,
-      code: lambda.Code.fromAsset('lambda/dist/meta'),
-      handler: 'webhook.handler',
+      code: lambda.Code.fromAsset('lambda', {
+        exclude: ['node_modules']
+      }),
+      handler: 'dist/meta/webhook.handler',
       role: iamROle,
       retryAttempts: 0
     });
 
     const lambdaRecieveMessage = new lambda.Function(this, 'receivemessage', {
       runtime: lambda.Runtime.NODEJS_20_X,
-      code: lambda.Code.fromAsset('lambda/dist/recieveMessage'),
-      handler: 'recieveMessage.handler',
+      code: lambda.Code.fromAsset('lambda', {
+        exclude: ['node_modules']
+      }),
+      handler: 'dist/recieveMessage/recieveMessage.handler',
       role: iamROle,
       retryAttempts: 0
     });
