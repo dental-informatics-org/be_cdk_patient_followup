@@ -12,7 +12,7 @@ export const handler = async (
   }
   const body = JSON.parse(event.body);
   try {
-    const response = createTemplateService(body);
+    const response = await createTemplateService(body);
     return {
       statusCode: 200,
       body: JSON.stringify(response)

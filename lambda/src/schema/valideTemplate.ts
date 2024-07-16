@@ -1,47 +1,84 @@
 import { z } from '../modules/zod';
 
-const textComponentSchema = z.object({
-  text: z.string()
+// Validação para MediaComponent
+const MediaComponent = z.object({
+  link: z.string().optional()
 });
 
-const buttonComponentSchema = z
+// Validação para ExampleComponent
+const ExampleComponent = z.object({
+  header_text: z.array(z.string()).optional(),
+  header_handle: z.array(z.string()).optional(),
+  body_text: z.array(z.array(z.string())).optional()
+});
+
+// Validação para ButtonComponent
+const ButtonComponent = z.object({
+  type: z.enum(['PHONE_NUMBER', 'URL', 'QUICK_REPLY', 'COPY_CODE', 'FLOW']),
+  text: z.string().max(25),
+  phone_number: z.string().max(20).optional(),
+  url: z.string().max(2000).optional(),
+  example: z.array(z.string()).optional(),
+  flow_id: z.string().optional(),
+  flow_action: z.enum(['navigate', 'data_exchange']).optional(),
+  navigate_screen: z.string().optional()
+});
+
+// Validação para Components
+const Components = z.object({
+  type: z.enum(['BODY', 'HEADER', 'FOOTER', 'BUTTONS']),
+  format: z.enum(['TEXT', 'IMAGE', 'VIDEO', 'DOCUMENT', 'LOCATION']).optional(),
+  text: z.string().optional(),
+  example: ExampleComponent.optional(),
+  buttons: z.array(ButtonComponent).optional(),
+  image: MediaComponent.optional(),
+  video: MediaComponent.optional(),
+  document: MediaComponent.optional()
+});
+
+// Validação para Template
+const templateSchema = z
   .object({
-    type: z.enum(['QUICK_REPLY', 'URL']),
-    title: z.string(),
-    payload: z.string().optional(),
-    url: z.string().url().optional()
+    name: z.string(),
+    category: z.enum(['AUTHENTICATION', 'MARKETING', 'UTILITY']),
+    allow_category_change: z.boolean().optional(),
+    language: z.string(),
+    components: z.array(Components).nonempty()
   })
   .refine(
-    (data) =>
-      (data.type === 'QUICK_REPLY' && data.payload) ||
-      (data.type === 'URL' && data.url),
+    (data) => {
+      const variableCount = (text: string) =>
+        (text.match(/{{\d+}}/g) || []).length;
+
+      return data.components.every((component) => {
+        const text = component.text || '';
+        const varCount = variableCount(text);
+        const wordCount = text.split(' ').length;
+
+        if (component.type === 'HEADER') return true;
+
+        // Verifica a relação entre variáveis e palavras
+        return varCount === 0 || wordCount >= 4 * varCount;
+      });
+    },
     {
-      message:
-        'Payload is required for QUICK_REPLY and URL is required for URL type'
+      message: 'Cada variável deve ter pelo menos 3 palavras não variáveis.',
+      path: ['components']
+    }
+  )
+  .refine(
+    (data) => {
+      const variableCount = data.components.reduce((count, component) => {
+        const text = component.text || '';
+        return count + (text.match(/{{\d+}}/g) || []).length;
+      }, 0);
+
+      return variableCount <= 100;
+    },
+    {
+      message: 'Não pode ter mais de 100 variáveis por mensagem.',
+      path: ['components']
     }
   );
 
-const imageComponentSchema = z.object({
-  link: z.string().url()
-});
-
-const componentSchema = z.object({
-  type: z.enum(['BODY', 'HEADER', 'FOOTER', 'BUTTON']),
-  text: textComponentSchema.optional(),
-  button: buttonComponentSchema.optional(),
-  image: imageComponentSchema.optional()
-});
-
-const templateSchema = z.object({
-  name: z.string(),
-  category: z.enum(['AUTHENTICATION', 'MARKETING', 'UTILITY']),
-  allow_category_change: z.boolean().optional(),
-  language: z.string(),
-  components: z.array(componentSchema)
-});
-
-const validateTemplate = (data: unknown) => {
-  return templateSchema.parse(data);
-};
-
-export default validateTemplate;
+export default templateSchema;

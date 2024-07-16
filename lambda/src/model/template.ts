@@ -7,23 +7,38 @@ export interface Template {
 }
 
 export interface Components {
-  type: 'BODY' | 'HEADER' | 'FOOTER' | 'BUTTON';
+  type: 'BODY' | 'HEADER' | 'FOOTER' | 'BUTTONS';
+  format?: 'TEXT' | 'IMAGE' | 'VIDEO' | 'DOCUMENT' | 'LOCATION';
   text?: TextComponent;
-  button?: ButtonComponent;
-  image?: ImageComponent;
+  example?: ExampleComponent;
+  buttons?: ButtonComponent[];
+  image?: MediaComponent;
+  video?: MediaComponent;
+  document?: MediaComponent;
 }
 
 export interface TextComponent {
   text: string;
+  example?: { [key: string]: string[] | string[][] };
+}
+
+export interface MediaComponent {
+  link?: string;
+}
+
+export interface ExampleComponent {
+  header_text?: string[];
+  header_handle?: string[];
+  body_text?: string[][];
 }
 
 export interface ButtonComponent {
-  type: 'QUICK_REPLY' | 'URL';
-  title: string;
-  payload?: string;
+  type: 'PHONE_NUMBER' | 'URL' | 'QUICK_REPLY' | 'COPY_CODE' | 'FLOW';
+  text: string;
+  phone_number?: string;
   url?: string;
-}
-
-export interface ImageComponent {
-  link: string;
+  example?: string[];
+  flow_id?: string;
+  flow_action?: 'navigate' | 'data_exchange';
+  navigate_screen?: string;
 }
