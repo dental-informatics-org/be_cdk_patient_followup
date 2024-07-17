@@ -1,4 +1,5 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import { recieveMessageService } from '../services/recieveMessageService';
 
 export const handler = async (
   event: APIGatewayProxyEvent
@@ -10,9 +11,10 @@ export const handler = async (
     };
   }
   try {
+    const response = await recieveMessageService(JSON.parse(event.body));
     return {
       statusCode: 200,
-      body: JSON.stringify({ message: `Agendamento criado` })
+      body: JSON.stringify({ message: `Agendamento criado`, response })
     };
   } catch (error) {
     return {

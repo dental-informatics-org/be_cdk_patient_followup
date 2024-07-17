@@ -7,7 +7,6 @@ export const createTemplateService = async (template: Template) => {
   try {
     const url = `${META_GRAPH_URL}${META_ACCOUNT_ID}/message_templates`;
     templateSchema.parse(template);
-    console.log(url);
     const body = await fetch(url, {
       method: 'POST',
       headers: {
