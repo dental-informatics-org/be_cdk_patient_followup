@@ -12,5 +12,7 @@ export const environment = {
   META_API_VERSION: String(process.env.META_API_VERSION),
   META_GRAPH_URL: String(process.env.META_GRAPH_URL),
   META_BEARERTOKEN: String(process.env.META_BEARERTOKEN),
-  META_WEBHOOK_VERIFY_TOKEN: String(process.env.META_WEBHOOK_VERIFY_TOKEN)
+  META_WEBHOOK_VERIFY_TOKEN: String(process.env.META_WEBHOOK_VERIFY_TOKEN),
+  IAM_ROLE: String(process.env.IAM_ROLE),
+  LAMBDA_SEND_MESSAGE: String(process.env.LAMBDA_SEND_MESSAGE)
 };

@@ -1,8 +1,24 @@
-export interface ReceveMessage {
+export interface SendMessageBody {
+  paciente_name: string;
+  schedule: string;
+  position: number;
+  sendMessage: SendMessage;
+}
+
+export interface ReceiveMessageRequest {
+  sendmessage: SendMessage;
+  date: Date;
+  process_number: number;
+  paciente_name: string;
+  recurrence: number;
+}
+
+export interface SendMessage {
   messaging_product: 'whatsapp';
   to: string;
   type: 'template' | 'text';
   recipient_type: 'individual' | 'group';
+  text?: Text;
   template: {
     name: string;
     language: {
@@ -10,7 +26,6 @@ export interface ReceveMessage {
     };
     components?: Components[];
   };
-  text?: Text;
 }
 
 export interface Components {

@@ -1,5 +1,5 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { recieveMessageService } from '../services/recieveMessageService';
+import { sendMessageService } from '../services/sendMessageService';
 
 export const handler = async (
   event: APIGatewayProxyEvent
@@ -11,7 +11,7 @@ export const handler = async (
     };
   }
   try {
-    const response = await recieveMessageService(JSON.parse(event.body));
+    const response = await sendMessageService(JSON.parse(event.body));
     return {
       statusCode: 200,
       body: JSON.stringify({ message: `Message Enviada`, response })

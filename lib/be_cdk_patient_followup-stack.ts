@@ -42,6 +42,17 @@ export class BeCdkPatientFollowupStack extends cdk.Stack {
       retryAttempts: 0
     });
 
+    const lambdaSendMessage = new lambda.Function(this, 'sendmessage', {
+      runtime: lambda.Runtime.NODEJS_20_X,
+      code: lambda.Code.fromAsset('lambda', {
+        exclude: ['dist', 'node_modules']
+      }),
+      handler: 'src/sendMessage/sendMessage.handler',
+      environment: environment,
+      role: iamROle,
+      retryAttempts: 0
+    });
+
     const lambdaRecieveMessage = new lambda.Function(this, 'receivemessage', {
       runtime: lambda.Runtime.NODEJS_20_X,
       code: lambda.Code.fromAsset('lambda', {
@@ -73,7 +84,8 @@ export class BeCdkPatientFollowupStack extends cdk.Stack {
 
     const metaResource = api.root.addResource('meta');
     const metaTemplate = api.root.addResource('template');
-    const messageResource = api.root.addResource('message');
+    const receiveMessageResource = api.root.addResource('receivemessage');
+    const sendMessageResource = api.root.addResource('sendmessage');
 
     const postIntegrationMetaWebhool = new apigw.LambdaIntegration(
       lambdaWebhookMeta
@@ -84,9 +96,13 @@ export class BeCdkPatientFollowupStack extends cdk.Stack {
     const postIntegrationReceiveMessage = new apigw.LambdaIntegration(
       lambdaRecieveMessage
     );
+    const postIntegrationSendMessage = new apigw.LambdaIntegration(
+      lambdaSendMessage
+    );
 
     metaTemplate.addMethod('POST', psotInterationMetaTemplate);
-    messageResource.addMethod('POST', postIntegrationReceiveMessage);
+    receiveMessageResource.addMethod('POST', postIntegrationReceiveMessage);
+    sendMessageResource.addMethod('POST', postIntegrationSendMessage);
     metaResource.addMethod('POST', postIntegrationMetaWebhool);
     metaResource.addMethod('GET', postIntegrationMetaWebhool);
   }
