@@ -28,7 +28,7 @@ export const recieveMessageService = async (event: ReceiveMessageRequest) => {
       const sendMessage: SendMessageBody = {
         paciente_name: event.paciente_name,
         position: i + 1,
-        schedule: `at(${dates[i].toLocaleDateString('en-CA').replace(/\//g, '-')}T${dates[i].toLocaleTimeString()})`,
+        schedule: `at(${dates[i].toLocaleDateString('en-CA').replace(/\//g, '-')}T${dates[i].toLocaleTimeString('pt-BR')})`,
         sendMessage: event.sendmessage
       };
       await createScheduler(sendMessage);
@@ -65,11 +65,13 @@ const createScheduler = async (event: SendMessageBody) => {
   try {
     const createRuleCommand = new CreateScheduleCommand(ruleParams);
     const ruleResponse = await eventBridgeClient.send(createRuleCommand);
+    console.log(ruleResponse);
     return {
       statusCode: 200,
       body: JSON.stringify({ message: ruleResponse })
     };
   } catch (error) {
+    console.log(error);
     return {
       statusCode: 400,
       body: JSON.stringify({ message: error })

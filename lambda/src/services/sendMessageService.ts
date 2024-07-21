@@ -3,6 +3,7 @@ import { SendMessage } from '../model/receveMessage';
 const { META_BEARERTOKEN } = process.env;
 export const sendMessageService = async (message: SendMessage) => {
   try {
+    console.log(message);
     const envite = await fetch(
       'https://graph.facebook.com/v20.0/386635361188949/messages',
       {
